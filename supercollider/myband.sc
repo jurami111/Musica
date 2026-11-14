@@ -1,0 +1,1 @@
+// TODO: agregar las definiciones de sintetizadores proporcionadas por el profesor.

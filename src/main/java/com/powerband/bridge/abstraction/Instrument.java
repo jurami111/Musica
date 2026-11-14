@@ -1,0 +1,1 @@
+package com.powerband.bridge.abstraction; public abstract class Instrument {}

@@ -1,0 +1,1 @@
+package com.powerband.common.constants; public final class BinaryConstants {}

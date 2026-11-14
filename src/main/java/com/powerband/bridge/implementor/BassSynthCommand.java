@@ -1,0 +1,1 @@
+package com.powerband.bridge.implementor; public class BassSynthCommand {}

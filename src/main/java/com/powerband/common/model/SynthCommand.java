@@ -1,0 +1,1 @@
+package com.powerband.common.model; public class SynthCommand {}

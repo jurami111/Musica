@@ -1,0 +1,1 @@
+# TODO: documentar el esquema de archivos binarios.

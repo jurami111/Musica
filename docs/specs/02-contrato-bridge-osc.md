@@ -1,0 +1,1 @@
+# TODO: documentar el contrato Bridge y OSC.
