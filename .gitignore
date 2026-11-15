@@ -24,6 +24,10 @@ hs_err_pid*
 replay_pid*
 
 /target/
+/android-instrument/.gradle/
+/android-instrument/build/
+/android-instrument/app/build/
+/android-instrument/local.properties
 /data/*
 !/data/.gitkeep
 !/data/temp/
