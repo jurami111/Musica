@@ -135,8 +135,25 @@ class InstrumentSocketServerTest {
         } finally {
             servidor.close();
         }
+
         try (java.net.ServerSocket comprobacion = new java.net.ServerSocket(puerto)) {
             assertTrue(comprobacion.isBound());
+        }
+    }
+
+    @Test
+    void servidorPuedeReiniciarseTrasDetenerse() throws Exception {
+        SintetizadorPrueba sintetizador = new SintetizadorPrueba();
+        try (InstrumentSocketServer servidor = new InstrumentSocketServer(0,
+                new MobileSensorInstrument(sintetizador))) {
+            servidor.iniciar();
+            servidor.close();
+            servidor.iniciar();
+            try (Socket cliente = conectar(servidor)) {
+                cliente.getOutputStream().write(
+                        "0,0,14,0,0,0\n".getBytes(StandardCharsets.US_ASCII));
+                assertEquals(60, sintetizador.notas.poll(2, TimeUnit.SECONDS));
+            }
         }
     }
 

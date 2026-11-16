@@ -24,6 +24,7 @@ public class InstrumentSocketServer implements AutoCloseable {
     private ServerSocket servidor;
     private Socket cliente;
     private Thread hilo;
+    private boolean deteniendo;
 
     public InstrumentSocketServer(int puerto, Instrument instrumento) {
         this.puerto = puerto;
@@ -31,7 +32,7 @@ public class InstrumentSocketServer implements AutoCloseable {
     }
 
     public synchronized void iniciar() throws IOException {
-        if (ejecutando || hilo != null) {
+        if (ejecutando || hilo != null || deteniendo) {
             throw new IllegalStateException("El servidor ya fue iniciado");
         }
         servidor = new ServerSocket(puerto);
@@ -109,6 +110,10 @@ public class InstrumentSocketServer implements AutoCloseable {
         Thread hiloActual;
         IOException fallo = null;
         synchronized (this) {
+            if (deteniendo) {
+                throw new IllegalStateException("El servidor ya se está deteniendo");
+            }
+            deteniendo = true;
             ejecutando = false;
             try {
                 if (servidor != null) {
@@ -135,12 +140,20 @@ public class InstrumentSocketServer implements AutoCloseable {
                 hiloActual.join();
             } catch (InterruptedException error) {
                 Thread.currentThread().interrupt();
+                synchronized (this) {
+                    deteniendo = false;
+                }
                 IOException interrupcion = new IOException("Interrumpido al detener el servidor", error);
                 if (fallo != null) {
                     interrupcion.addSuppressed(fallo);
                 }
                 throw interrupcion;
             }
+        }
+        synchronized (this) {
+            hilo = null;
+            servidor = null;
+            deteniendo = false;
         }
         if (fallo != null) {
             throw fallo;

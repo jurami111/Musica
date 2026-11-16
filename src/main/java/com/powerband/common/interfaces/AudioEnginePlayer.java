@@ -1,1 +1,8 @@
-package com.powerband.common.interfaces; public interface AudioEnginePlayer {}
+package com.powerband.common.interfaces;
+
+import com.powerband.common.model.SynthCommand;
+import java.io.IOException;
+
+public interface AudioEnginePlayer {
+    void reproducirComando(SynthCommand comando) throws IOException;
+}
