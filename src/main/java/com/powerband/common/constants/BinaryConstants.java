@@ -10,12 +10,15 @@ public final class BinaryConstants {
     public static final int BYTES_REGISTRO = 256;
     public static final int MAXIMO_UNIDADES_NOMBRE = 50;
     public static final int BYTES_NOMBRE = MAXIMO_UNIDADES_NOMBRE * BYTES_CARACTER;
+    public static final int BYTES_REGISTRO_LISTA = BYTES_NOMBRE + BYTES_ENTERO_LARGO;
     public static final int MAXIMO_PARAMETROS = 16;
     public static final int BYTES_PARAMETROS = MAXIMO_PARAMETROS * BYTES_DECIMAL;
     public static final byte VALOR_RELLENO = 0;
 
     public static final int TIPO_ENCABEZADO = 1;
     public static final int TIPO_COMANDO = 2;
+    public static final int TIPO_ENCABEZADO_PENDIENTE = 3;
+    public static final long SIN_RESERVA = -1L;
 
     public static final int ACCION_TOCAR = 1;
     public static final int ACCION_INICIAR_NOTA = 2;

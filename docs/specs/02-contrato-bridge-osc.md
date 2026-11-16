@@ -79,9 +79,9 @@ El archivo de SuperCollider del repositorio todavía no contiene las
 definiciones proporcionadas, por lo que una conexión real requiere cargarlas;
 no se presentará como verificada sin una prueba real. Se mantendrá la
 compatibilidad con el
-[esquema binario](03-esquema-archivos-binarios.md); el significado y orden
-de sus parámetros también requieren acuerdo antes de implementar comandos
-de grabación o reproducción.
+[esquema binario](03-esquema-archivos-binarios.md). El contrato de parámetros
+para almacenamiento se acordó en [SPEC-MUSIC-01](07-lectura-escritura-music.md);
+su integración con grabación y reproducción no forma parte de esta historia.
 
 ## Errores
 

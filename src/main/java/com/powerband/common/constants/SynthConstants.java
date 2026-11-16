@@ -17,6 +17,12 @@ public final class SynthConstants {
 
     public static final int NOTA_MIDI_MINIMA = 0;
     public static final int NOTA_MIDI_MAXIMA = 127;
+    public static final int PARAMETROS_PIANO = 3;
+    public static final int PARAMETROS_BAJO = 2;
+    public static final int PARAMETROS_INICIO_ORGANO = 7;
+    public static final int PARAMETROS_FIN_ORGANO = 1;
+    public static final int TERCERA_MENOR = 3;
+    public static final int TERCERA_MAYOR = 4;
 
     private SynthConstants() {
     }

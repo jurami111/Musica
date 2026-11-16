@@ -38,8 +38,9 @@ El nombre dispone de 50 unidades UTF-16, escritas mediante 50 operaciones
 se completaran con caracteres nulos. Los nombres vacios, con caracteres nulos
 o mayores de 50 unidades se rechazaran mediante validacion, sin truncarlos.
 Algunos simbolos, como ciertos emojis, ocupan dos unidades UTF-16.
-Los nombres deben ser unicos; la comprobacion en disco corresponde al modulo
-de almacenamiento y aun no esta implementada.
+Los nombres deben ser unicos, comparados exactamente con String.equals:
+mayusculas, tildes y espacios cuentan. La comprobacion en recordings.list se
+implementa en [SPEC-LIST-01](08-lista-y-nombres-unicos.md).
 
 ## Encabezado en recordings.music
 
@@ -81,10 +82,11 @@ Acciones: tocar = 1, iniciar nota = 2, terminar nota = 3.
 Los nombres OSC se conservan exactamente: `classicPiano`, `stringBass` y
 `organ70s`.
 
-Antes de implementar los comandos se debera acordar el significado y orden
-de sus parametros para cada sintetizador y accion, incluyendo como asociar
-el inicio y final de una nota del organo. Esta biblioteca reserva el espacio;
-todavia no implementa ese contrato ni la reproduccion.
+El contrato de parametros aprobado para el almacenamiento se define en
+[SPEC-MUSIC-01](07-lectura-escritura-music.md). El inicio y final del organo
+se relacionan mediante la nota MIDI, no mediante un nodo OSC.
+El tipo TIPO_ENCABEZADO_PENDIENTE identifica una reserva aun sin nombre;
+no se acepta como encabezado definitivo al leer.
 
 ## Entrada en recordings.index
 
@@ -98,15 +100,25 @@ todavia no implementa ese contrato ni la reproduccion.
 El indice no tiene un encabezado adicional. El registro numero n, contando
 desde cero, comienza en n * 256 bytes. Los calculos de posiciones utilizaran
 `long`. El ordenamiento externo y la busqueda binaria deberan utilizar el mismo
-criterio de comparacion de nombres, pendiente de definir antes de implementarlos.
+criterio de comparacion de nombres. Se utilizara String.compareTo para el orden
+y String.equals para la igualdad, coherente con el rechazo de duplicados.
+
+## Entradas de recordings.list
+
+Cada entrada contiene solamente nombre (100 bytes) y fecha/hora UTC como long
+de milisegundos desde 1970 (8 bytes). Son 108 bytes, sin relleno adicional ni
+encabezado global. Se conserva el orden de registro, no el orden alfabetico.
+La precision de la fecha es de milisegundos.
+El contrato se detalla en [SPEC-LIST-01](08-lista-y-nombres-unicos.md).
 
 ## Alcance actual
 
-Solo se implementa la biblioteca central de constantes. La escritura, lectura,
-validacion de entradas, ordenamiento, busqueda y conexion OSC quedan pendientes.
-El proyecto actual contiene clases vacias, por lo que aun no hay operaciones
-con valores quemados que reemplazar. Los modulos futuros deberan reutilizar
-estas constantes en lugar de repetir sus valores.
+La biblioteca central de constantes esta implementada. La lectura y escritura
+de recordings.music se desarrollan en [SPEC-MUSIC-01](07-lectura-escritura-music.md).
+El indice, la lista, la busqueda y el ordenamiento quedan fuera de esa historia.
+La gestion independiente de la lista y sus nombres unicos corresponde a
+[SPEC-LIST-01](08-lista-y-nombres-unicos.md).
+Los modulos deben reutilizar las constantes en lugar de repetir sus valores.
 
 No se fija un maximo arbitrario de canciones o duracion de grabacion.
 El puerto de un servidor para instrumentos externos se acordara cuando se
