@@ -46,9 +46,11 @@ public final class BusInstrumentos {
                 }
                 if (identificador == SynthConstants.IDENTIFICADOR_ORGANO) {
                     publicar(identificador, BinaryConstants.ACCION_INICIAR_NOTA,
-                            nota, 1, 2, 3, 1, 0.5, 0.25);
+                            nota, SynthConstants.R1_ORGANO, SynthConstants.R2_ORGANO, SynthConstants.R3_ORGANO,
+                            SynthConstants.A1_ORGANO, SynthConstants.A2_ORGANO, SynthConstants.A3_ORGANO);
                 } else if (identificador == SynthConstants.IDENTIFICADOR_PIANO) {
-                    publicar(identificador, BinaryConstants.ACCION_TOCAR, nota, duracionMs, 4);
+                    publicar(identificador, BinaryConstants.ACCION_TOCAR, nota, duracionMs,
+                            SynthConstants.TERCERA_MAYOR);
                 } else {
                     publicar(identificador, BinaryConstants.ACCION_TOCAR, nota, duracionMs);
                 }
@@ -100,15 +102,34 @@ public final class BusInstrumentos {
         if (!grabador.iniciar(nombre)) {
             return false;
         }
+        registrarInicio();
+        return true;
+    }
+
+    public synchronized void iniciarGrabacion() throws PowerBandException {
+        grabador.iniciar();
+        registrarInicio();
+    }
+
+    private void registrarInicio() throws PowerBandException {
         inicioGrabacion = reloj.getAsLong();
         for (double[] parametros : organoActivo.values()) {
             editor.observarComando(new SynthCommand(0, SynthConstants.IDENTIFICADOR_ORGANO,
                     BinaryConstants.ACCION_INICIAR_NOTA, parametros));
         }
-        return true;
     }
 
     public synchronized void finalizarGrabacion() throws PowerBandException {
+        registrarFinal();
+        grabador.finalizar();
+    }
+
+    public synchronized void detenerGrabacion() throws PowerBandException {
+        registrarFinal();
+        grabador.detener();
+    }
+
+    private void registrarFinal() throws PowerBandException {
         if (!grabador.estaActiva()) {
             throw new IllegalStateException("No hay una grabación activa");
         }
@@ -117,6 +138,5 @@ public final class BusInstrumentos {
             editor.observarComando(new SynthCommand(tiempo, SynthConstants.IDENTIFICADOR_ORGANO,
                     BinaryConstants.ACCION_TERMINAR_NOTA, nota));
         }
-        grabador.finalizar();
     }
 }

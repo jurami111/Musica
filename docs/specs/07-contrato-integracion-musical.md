@@ -64,11 +64,11 @@ controlador de reproducción futuro. Un fallo de envío o de comunicación se
 propaga como `IOException`; un envío UDP exitoso no confirma reproducción.
 
 El contrato recibe el comando completo para no perder la tercera del piano ni
-los parciales del órgano. El Bridge actual solo ofrece tercera mayor y
-parciales predeterminados: **todavía no puede reproducir todos los comandos
-válidos del almacenamiento**. Adaptar el Bridge y definir el manejo de esos
-parámetros es trabajo futuro, fuera de esta historia; no se deben descartar
-silenciosamente al implementar un reproductor.
+los parciales del órgano. La integración posterior
+[SPEC-PLAY-02](14-receptor-comandos-reproduccion.md) agrega el alias compatible
+`playCommand` y la reproducción de terceras menores y parciales personalizados.
+Los valores que no pueden convertirse a float OSC se rechazan explícitamente,
+sin descartar parámetros silenciosamente.
 
 ## Criterios de aceptación y verificación
 

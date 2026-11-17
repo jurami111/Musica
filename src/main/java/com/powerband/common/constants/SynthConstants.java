@@ -23,6 +23,19 @@ public final class SynthConstants {
     public static final int PARAMETROS_FIN_ORGANO = 1;
     public static final int TERCERA_MENOR = 3;
     public static final int TERCERA_MAYOR = 4;
+    public static final int NODO_INICIAL = 10000;
+    public static final int ACCION_AGREGAR_AL_INICIO = 0;
+    public static final int GRUPO_PREDETERMINADO = 1;
+    public static final double FRECUENCIA_REFERENCIA = 440.0;
+    public static final int NOTA_REFERENCIA = 69;
+    public static final double SEMITONOS_OCTAVA = 12.0;
+    public static final double RAZON_OCTAVA = 2.0;
+    public static final double R1_ORGANO = 1;
+    public static final double R2_ORGANO = 2;
+    public static final double R3_ORGANO = 3;
+    public static final double A1_ORGANO = 1;
+    public static final double A2_ORGANO = 0.5;
+    public static final double A3_ORGANO = 0.25;
 
     private SynthConstants() {
     }

@@ -1,6 +1,7 @@
 package com.powerband.instrumentos;
 
 import com.powerband.bridge.abstraction.Instrument;
+import com.powerband.common.constants.ConstantesInstrumentos;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -14,7 +15,7 @@ public final class ProcesadorGamepad {
 
     public void procesar(boolean[] pulsados) throws IOException {
         for (int nota : detector.actualizar(pulsados)) {
-            instrumento.iniciarNota(nota, 300);
+            instrumento.iniciarNota(nota, ConstantesInstrumentos.DURACION_NOTA_MS);
         }
     }
 }

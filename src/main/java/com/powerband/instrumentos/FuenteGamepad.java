@@ -1,6 +1,7 @@
 package com.powerband.instrumentos;
 
 import com.powerband.bridge.abstraction.Instrument;
+import com.powerband.common.constants.ConstantesInstrumentos;
 import com.studiohartman.jamepad.ControllerManager;
 import com.studiohartman.jamepad.ControllerState;
 import java.io.IOException;
@@ -35,18 +36,18 @@ public final class FuenteGamepad implements AutoCloseable {
             gestor.initSDLGamepad();
             inicializado = true;
             ProcesadorGamepad procesador = new ProcesadorGamepad(instrumento);
-            ControllerState estado = gestor.getState(0);
+            ControllerState estado = gestor.getState(ConstantesInstrumentos.DISPOSITIVO_PREDETERMINADO);
             if (!estado.isConnected) {
                 throw new IOException("No hay un gamepad compatible conectado");
             }
             REGISTRO.info("Gamepad conectado: " + estado.controllerType);
             while (activa) {
-                estado = gestor.getState(0);
+                estado = gestor.getState(ConstantesInstrumentos.DISPOSITIVO_PREDETERMINADO);
                 if (!estado.isConnected) {
                     throw new IOException("El gamepad se ha desconectado");
                 }
                 procesador.procesar(new boolean[] {estado.a, estado.b, estado.x, estado.y});
-                Thread.sleep(20);
+                Thread.sleep(ConstantesInstrumentos.INTERVALO_GAMEPAD_MS);
             }
         } catch (InterruptedException error) {
             Thread.currentThread().interrupt();

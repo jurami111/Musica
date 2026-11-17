@@ -1,6 +1,7 @@
 package com.powerband.instrumentos;
 
 import com.powerband.bridge.abstraction.Instrument;
+import com.powerband.common.constants.ConstantesInstrumentos;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -24,7 +25,7 @@ public final class ProcesadorCamara {
         detenerNota();
         if (nota != null) {
             notaActiva = nota;
-            instrumento.iniciarNota(nota, 300);
+            instrumento.iniciarNota(nota, ConstantesInstrumentos.DURACION_NOTA_MS);
         }
     }
 

@@ -1,6 +1,8 @@
 package com.powerband.instrumentos;
 
 import com.powerband.bridge.abstraction.Instrument;
+import com.powerband.common.constants.AppConstants;
+import com.powerband.common.constants.ConstantesInstrumentos;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -33,8 +35,9 @@ public final class FuenteCamara implements AutoCloseable {
 
     private void capturar() {
         ProcesadorCamara procesador = new ProcesadorCamara(instrumento);
-        try (VideoCapture camara = new VideoCapture(0);
-                Mat cuadro = new Mat(); Mat reducido = new Mat(); Size tamano = new Size(80, 60)) {
+        try (VideoCapture camara = new VideoCapture(ConstantesInstrumentos.DISPOSITIVO_PREDETERMINADO);
+                Mat cuadro = new Mat(); Mat reducido = new Mat();
+                Size tamano = new Size(ConstantesInstrumentos.ANCHO_CAMARA, ConstantesInstrumentos.ALTO_CAMARA)) {
             if (!camara.isOpened()) {
                 throw new IOException("No se pudo abrir la cámara predeterminada");
             }
@@ -44,14 +47,15 @@ public final class FuenteCamara implements AutoCloseable {
                 if (!camara.read(cuadro) || cuadro.empty()) {
                     throw new IOException("No se pudo leer un cuadro de la cámara");
                 }
-                if (cuadro.channels() != 3) {
+                if (cuadro.channels() != ConstantesInstrumentos.CANALES_BGR) {
                     throw new IOException("La cámara no produjo imágenes BGR");
                 }
                 resize(cuadro, reducido, tamano, 0, 0, INTER_NEAREST);
-                BufferedImage imagen = new BufferedImage(80, 60, BufferedImage.TYPE_INT_RGB);
+                BufferedImage imagen = new BufferedImage(ConstantesInstrumentos.ANCHO_CAMARA,
+                        ConstantesInstrumentos.ALTO_CAMARA, BufferedImage.TYPE_INT_RGB);
                 try (UByteIndexer pixeles = reducido.createIndexer(false)) {
-                    for (int y = 0; y < 60; y++) {
-                        for (int x = 0; x < 80; x++) {
+                    for (int y = 0; y < ConstantesInstrumentos.ALTO_CAMARA; y++) {
+                        for (int x = 0; x < ConstantesInstrumentos.ANCHO_CAMARA; x++) {
                             int azul = pixeles.get(y, x, 0);
                             int verde = pixeles.get(y, x, 1);
                             int rojo = pixeles.get(y, x, 2);
@@ -60,9 +64,10 @@ public final class FuenteCamara implements AutoCloseable {
                     }
                 }
                 procesador.procesar(imagen);
-                long espera = 100_000_000L - (System.nanoTime() - inicio);
+                long espera = ConstantesInstrumentos.INTERVALO_CAMARA_NS - (System.nanoTime() - inicio);
                 if (espera > 0) {
-                    Thread.sleep(espera / 1_000_000L, (int) (espera % 1_000_000L));
+                    Thread.sleep(espera / AppConstants.NANOS_POR_MILISEGUNDO,
+                            (int) (espera % AppConstants.NANOS_POR_MILISEGUNDO));
                 }
             }
         } catch (InterruptedException error) {

@@ -10,6 +10,7 @@ import com.powerband.common.constants.BinaryConstants;
 import com.powerband.common.constants.SynthConstants;
 import com.powerband.common.exceptions.ArchivoCorruptoException;
 import com.powerband.common.exceptions.StorageIOException;
+import com.powerband.common.interfaces.AudioEnginePlayer;
 import com.powerband.common.model.IndexEntry;
 import com.powerband.common.model.SynthCommand;
 import com.powerband.storage.io.IndexFileManager;
@@ -181,6 +182,67 @@ class PlaybackBufferThreadTest {
         ExecutionException error = assertThrows(ExecutionException.class,
                 () -> hilo.obtenerResultado().toCompletableFuture().get(2, TimeUnit.SECONDS));
         assertInstanceOf(ArchivoCorruptoException.class, error.getCause());
+    }
+
+    @Test
+    void liberaElReceptorAlInterrumpirYConservaElFalloDeCierre() throws Exception {
+        crearGrabacion(0, 100);
+        CountDownLatch esperando = new CountDownLatch(1);
+        AtomicLong cierres = new AtomicLong();
+        IOException falloCierre = new IOException("No se pudo liberar el organo");
+        AudioEnginePlayer receptor = new AudioEnginePlayer() {
+            @Override
+            public void reproducirComando(SynthCommand comando) {
+            }
+
+            @Override
+            public void finalizarReproduccion() throws IOException {
+                cierres.incrementAndGet();
+                throw falloCierre;
+            }
+        };
+        PlaybackBufferThread hilo = PlaybackBufferThread.cargar(indice(), musica(), "Ensayo",
+                receptor, () -> 0L, nanos -> {
+                    esperando.countDown();
+                    new CountDownLatch(1).await();
+                }).orElseThrow();
+        hilo.start();
+        try {
+            assertTrue(esperando.await(2, TimeUnit.SECONDS));
+        } finally {
+            hilo.interrupt();
+            hilo.join(2000);
+        }
+        ExecutionException error = assertThrows(ExecutionException.class,
+                () -> hilo.obtenerResultado().toCompletableFuture().get(2, TimeUnit.SECONDS));
+        assertInstanceOf(InterruptedException.class, error.getCause());
+        assertEquals(List.of(falloCierre), List.of(error.getCause().getSuppressed()));
+        assertEquals(1, cierres.get());
+    }
+
+    @Test
+    void falloDeCierreNoOcultaElFalloDelComando() throws Exception {
+        crearGrabacion(0);
+        IOException falloEnvio = new IOException("Fallo de envio");
+        IOException falloCierre = new IOException("Fallo de cierre");
+        AudioEnginePlayer receptor = new AudioEnginePlayer() {
+            @Override
+            public void reproducirComando(SynthCommand comando) throws IOException {
+                throw falloEnvio;
+            }
+
+            @Override
+            public void finalizarReproduccion() throws IOException {
+                throw falloCierre;
+            }
+        };
+        PlaybackBufferThread hilo = PlaybackBufferThread.cargar(
+                indice(), musica(), "Ensayo", receptor).orElseThrow();
+        hilo.start();
+        ExecutionException error = assertThrows(ExecutionException.class,
+                () -> hilo.obtenerResultado().toCompletableFuture().get(2, TimeUnit.SECONDS));
+        assertEquals(falloEnvio, error.getCause());
+        assertEquals(List.of(falloCierre), List.of(error.getCause().getSuppressed()));
     }
 
     private void crearGrabacion(long... tiempos) throws Exception {

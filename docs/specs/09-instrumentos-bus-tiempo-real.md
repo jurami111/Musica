@@ -86,6 +86,11 @@ La cámara se procesa localmente; no se guardan ni transmiten imágenes.
 
 ## Grabación
 
+El flujo de nombre e indexación descrito a continuación corresponde a esta
+historia original. [SPEC-APP-01](15-integracion-final.md) lo actualiza:
+se inicia con `grabar`, se detiene con `finalizar`, se pide el nombre al final
+y se actualizan automáticamente índice y lista al guardar.
+
 - Al iniciar, solicitar nombre, validar con las reglas existentes y comprobar
   que no esté en `recordings.list`; rechazar duplicados por condición, sin
   usar excepciones para repetir la entrada. Reservar un encabezado en
@@ -151,12 +156,14 @@ que ejecuta Java. Conectar un gamepad compatible con el mapeo de SDL y el
 móvil al servidor TCP del equipo; el puerto predeterminado es 5000 y se
 puede cambiar añadiendo un argumento numérico al comando Java.
 
-En consola usar `grabar NOMBRE`, `finalizar` y `salir`. Los comandos
+El flujo actual está documentado en el [README](../../README.md):
+usar `grabar`, `finalizar`, indicar el nombre solicitado y `salir`. Los comandos
 `parar camara`, `parar gamepad` y `parar movil` detienen cada fuente;
 `camara`, `gamepad` y `movil` las inician nuevamente. Usar `salir` para
 cerrar ordenadamente y finalizar una grabación activa. Para escuchar sonido,
-SuperCollider debe estar ejecutándose con los tres synths cargados: el
-archivo `myband.sc` del repositorio sigue sin contener esas definiciones.
+SuperCollider debe estar ejecutándose con los tres synths cargados desde
+[myband.sc](../../supercollider/myband.sc), que contiene definiciones propias
+compatibles con el contrato.
 La aplicación Android y los gestos aún necesitan verificación física.
 
 ## Revisión

@@ -1,13 +1,14 @@
 package com.powerband.network;
 
 import com.powerband.bridge.abstraction.Instrument;
+import com.powerband.common.constants.ConstantesInstrumentos;
 import java.io.IOException;
 import java.util.function.LongSupplier;
 
 final class GestorGestos {
     private final Instrument instrumento;
     private final LongSupplier reloj;
-    private int nota = 60;
+    private int nota = ConstantesInstrumentos.NOTA_MOVIL_INICIAL;
     private boolean giroArmado = true;
     private boolean movimientoArmado = true;
     private boolean notaTocada;
@@ -20,24 +21,24 @@ final class GestorGestos {
 
     void procesar(MuestraSensores muestra) throws IOException {
         double giro = muestra.gz();
-        if (Math.abs(giro) < 0.5) {
+        if (Math.abs(giro) < ConstantesInstrumentos.UMBRAL_GIRO_REARME) {
             giroArmado = true;
-        } else if (giroArmado && giro >= 1.5) {
-            nota = Math.min(72, nota + 1);
+        } else if (giroArmado && giro >= ConstantesInstrumentos.UMBRAL_GIRO) {
+            nota = Math.min(ConstantesInstrumentos.NOTA_MOVIL_MAXIMA, nota + 1);
             giroArmado = false;
-        } else if (giroArmado && giro <= -1.5) {
-            nota = Math.max(48, nota - 1);
+        } else if (giroArmado && giro <= -ConstantesInstrumentos.UMBRAL_GIRO) {
+            nota = Math.max(ConstantesInstrumentos.NOTA_MOVIL_MINIMA, nota - 1);
             giroArmado = false;
         }
 
         double magnitud = Math.hypot(Math.hypot(muestra.ax(), muestra.ay()), muestra.az());
-        double movimiento = Math.abs(magnitud - 9.80665);
-        if (movimiento < 2.0) {
+        double movimiento = Math.abs(magnitud - ConstantesInstrumentos.GRAVEDAD);
+        if (movimiento < ConstantesInstrumentos.UMBRAL_MOVIMIENTO_REARME) {
             movimientoArmado = true;
-        } else if (movimiento >= 4.0 && movimientoArmado) {
+        } else if (movimiento >= ConstantesInstrumentos.UMBRAL_MOVIMIENTO && movimientoArmado) {
             long ahora = reloj.getAsLong();
-            if (!notaTocada || ahora - ultimaNota >= 400_000_000L) {
-                instrumento.iniciarNota(nota, 300);
+            if (!notaTocada || ahora - ultimaNota >= ConstantesInstrumentos.INTERVALO_NOTAS_MOVIL_NS) {
+                instrumento.iniciarNota(nota, ConstantesInstrumentos.DURACION_NOTA_MS);
                 ultimaNota = ahora;
                 notaTocada = true;
                 movimientoArmado = false;

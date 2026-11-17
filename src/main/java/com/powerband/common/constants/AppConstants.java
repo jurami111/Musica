@@ -3,6 +3,7 @@ package com.powerband.common.constants;
 import java.nio.file.Path;
 
 public final class AppConstants {
+    public static final long NANOS_POR_MILISEGUNDO = 1_000_000L;
 
     public static final String NOMBRE_ARCHIVO_GRABACIONES = "recordings.music";
     public static final String NOMBRE_ARCHIVO_INDICE = "recordings.index";

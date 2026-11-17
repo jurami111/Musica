@@ -13,7 +13,7 @@ public class BandClient implements EmisorOsc, AutoCloseable {
     private final DatagramSocket socket;
     private final InetAddress direccion;
     private final int puerto;
-    private int siguienteNodo = 10000;
+    private int siguienteNodo = SynthConstants.NODO_INICIAL;
 
     public BandClient() throws IOException {
         this(SynthConstants.DIRECCION_SUPERCOLLIDER, SynthConstants.PUERTO_OSC);
@@ -31,8 +31,8 @@ public class BandClient implements EmisorOsc, AutoCloseable {
         Object[] argumentos = new Object[4 + controles.length];
         argumentos[0] = nombre;
         argumentos[1] = nodo;
-        argumentos[2] = 0;
-        argumentos[3] = 1;
+        argumentos[2] = SynthConstants.ACCION_AGREGAR_AL_INICIO;
+        argumentos[3] = SynthConstants.GRUPO_PREDETERMINADO;
         System.arraycopy(controles, 0, argumentos, 4, controles.length);
         enviar(SynthConstants.MENSAJE_CREAR_SINTETIZADOR, argumentos);
         return nodo;

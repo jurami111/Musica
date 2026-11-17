@@ -138,6 +138,37 @@ class BridgeTest {
         }
     }
 
+    @Test
+    void conversionInvalidaNoLiberaLaNotaNiEnviaParametrosParciales() throws IOException {
+        EmisorDePrueba emisor = new EmisorDePrueba();
+        PadSynthCommand organo = new PadSynthCommand(emisor);
+        organo.iniciarNota(60, 300);
+        for (double invalido : new double[] {Double.MAX_VALUE, Double.MIN_VALUE, Double.NaN}) {
+            assertThrows(IOException.class,
+                    () -> organo.iniciarNota(60, 1, 2, 3, 1, 0.5, invalido));
+        }
+        assertEquals(1, emisor.mensajes.size());
+        organo.terminarNota(60);
+        assertEquals(List.of(10000, "gate", 0), emisor.mensajes.get(1));
+    }
+
+    @Test
+    void cierreIntentaTodasLasNotasYPermiteReintentarLasFallidas() throws IOException {
+        EmisorDePrueba emisor = new EmisorDePrueba();
+        PadSynthCommand organo = new PadSynthCommand(emisor);
+        organo.iniciarNota(60, 300);
+        organo.iniciarNota(64, 300);
+        emisor.fallarCambio = true;
+        IOException error = assertThrows(IOException.class, organo::terminarTodas);
+        assertEquals(1, error.getSuppressed().length);
+        emisor.fallarCambio = false;
+        organo.terminarTodas();
+        assertEquals(java.util.Set.of(List.of(10000, "gate", 0), List.of(10001, "gate", 0)),
+                java.util.Set.copyOf(emisor.mensajes.subList(2, 4)));
+        organo.terminarTodas();
+        assertEquals(4, emisor.mensajes.size());
+    }
+
     private static List<Object> recibir(DatagramSocket receptor) throws IOException {
         byte[] datos = new byte[1024];
         DatagramPacket paquete = new DatagramPacket(datos, datos.length);

@@ -40,16 +40,21 @@ muestra; se respetan los tiempos solicitados tanto como el sistema permita.
 El llamador obtiene un resultado asincrono de finalizacion y debe observarlo.
 Errores de archivo o reproductor se propagan con su causa. Interrumpir el hilo
 interrumpe la espera, termina con error y conserva el estado de interrupcion.
-El motor no modifica los dispositivos ni controla notas de organo que queden
-activas tras una interrupcion o fallo: ese cierre requiere integracion futura.
+El motor no modifica los dispositivos. [SPEC-APP-01](15-integracion-final.md)
+agrega el cierre del receptor para liberar notas de organo tras finalizar,
+fallar o interrumpir.
 
 ## Limites conocidos
 
-La grabacion actual aun no actualiza recordings.index automaticamente, por lo
-que esta historia no habilita por si sola la carga de nuevas grabaciones.
-ReproductorBridge rechaza terceras menores y parciales personalizados; esos
-errores se muestran al llamador y no se descartan parametros silenciosamente.
-La interfaz de usuario y la reproduccion con hardware real quedan pendientes.
+Esta historia implemento el cargador independiente. La actualizacion automatica
+de recordings.index y su acceso por consola se integran en
+[SPEC-APP-01](15-integracion-final.md).
+La integración del receptor se completó en
+[SPEC-PLAY-02](14-receptor-comandos-reproduccion.md): el buffer usa
+`playCommand` y ReproductorBridge admite terceras menores y parciales
+personalizados representables como float OSC.
+La interfaz por consola se integra en SPEC-APP-01. La reproduccion con hardware
+real queda pendiente.
 
 ## Verificacion prevista
 

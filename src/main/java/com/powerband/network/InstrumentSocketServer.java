@@ -3,6 +3,7 @@ package com.powerband.network;
 import com.powerband.bridge.abstraction.Instrument;
 import com.powerband.bridge.abstraction.MobileSensorInstrument;
 import com.powerband.bridge.implementor.LeadSynthCommand;
+import com.powerband.common.constants.ConstantesInstrumentos;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class InstrumentSocketServer implements AutoCloseable {
-    public static final int PUERTO_PREDETERMINADO = 5000;
-    private static final int MAXIMO_LINEA = 256;
+    public static final int PUERTO_PREDETERMINADO = ConstantesInstrumentos.PUERTO_MOVIL;
+    private static final int MAXIMO_LINEA = ConstantesInstrumentos.MAXIMO_LINEA_SENSORES;
     private static final Logger REGISTRO = Logger.getLogger(InstrumentSocketServer.class.getName());
 
     private final int puerto;

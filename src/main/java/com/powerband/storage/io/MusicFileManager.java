@@ -18,6 +18,7 @@ import java.util.Objects;
 
 public final class MusicFileManager implements AutoCloseable {
     private final RandomAccessFile archivo;
+    private final Path ruta;
     private long reserva = BinaryConstants.SIN_RESERVA;
     private long ultimoTiempo;
     private boolean cerrado;
@@ -29,6 +30,7 @@ public final class MusicFileManager implements AutoCloseable {
 
     public MusicFileManager(Path ruta) throws StorageIOException, ArchivoCorruptoException {
         Objects.requireNonNull(ruta, "ruta");
+        this.ruta = ruta.toAbsolutePath().normalize();
         try {
             Path carpeta = ruta.toAbsolutePath().getParent();
             Files.createDirectories(carpeta);
@@ -47,6 +49,10 @@ public final class MusicFileManager implements AutoCloseable {
         } catch (IOException error) {
             throw new StorageIOException("No se pudo abrir el archivo de grabaciones: " + ruta, error);
         }
+    }
+
+    public Path obtenerRuta() {
+        return ruta;
     }
 
     public synchronized long reservarEncabezado() throws StorageIOException, ArchivoCorruptoException {

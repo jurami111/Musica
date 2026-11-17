@@ -40,7 +40,7 @@ public class ActividadInstrumento extends Activity implements SensorEventListene
 
         LinearLayout pantalla = new LinearLayout(this);
         pantalla.setOrientation(LinearLayout.VERTICAL);
-        int margen = (int) (16 * getResources().getDisplayMetrics().density);
+        int margen = (int) (ConstantesInstrumento.MARGEN_DP * getResources().getDisplayMetrics().density);
         pantalla.setPadding(margen, margen, margen, margen);
         direccion = new EditText(this);
         direccion.setHint("Dirección del servidor");
@@ -49,7 +49,7 @@ public class ActividadInstrumento extends Activity implements SensorEventListene
         puerto = new EditText(this);
         puerto.setHint("Puerto");
         puerto.setInputType(InputType.TYPE_CLASS_NUMBER);
-        puerto.setText("5000");
+        puerto.setText(Integer.toString(ConstantesInstrumento.PUERTO_PREDETERMINADO));
         pantalla.addView(puerto);
         TextView instrucciones = new TextView(this);
         instrucciones.setText("Gira el móvil para cambiar la nota. Muévelo para tocar.");
@@ -83,7 +83,7 @@ public class ActividadInstrumento extends Activity implements SensorEventListene
             return;
         }
         int numeroPuerto = Integer.parseInt(textoPuerto);
-        if (numeroPuerto < 1 || numeroPuerto > 65535) {
+        if (numeroPuerto < 1 || numeroPuerto > ConstantesInstrumento.PUERTO_MAXIMO) {
             estado.setText("El puerto debe estar entre 1 y 65535.");
             return;
         }
@@ -99,7 +99,7 @@ public class ActividadInstrumento extends Activity implements SensorEventListene
 
     private void transmitir(Socket socket, String anfitrion, int numeroPuerto) {
         try {
-            socket.connect(new InetSocketAddress(anfitrion, numeroPuerto), 5000);
+            socket.connect(new InetSocketAddress(anfitrion, numeroPuerto), ConstantesInstrumento.TIEMPO_CONEXION_MS);
             runOnUiThread(() -> {
                 if (conexion != socket) {
                     return;
@@ -125,7 +125,7 @@ public class ActividadInstrumento extends Activity implements SensorEventListene
                                 + Float.toString(g[1]) + "," + Float.toString(g[2]) + "\n");
                         salida.flush();
                     }
-                    Thread.sleep(50);
+                    Thread.sleep(ConstantesInstrumento.INTERVALO_ENVIO_MS);
                 }
             }
         } catch (IOException error) {

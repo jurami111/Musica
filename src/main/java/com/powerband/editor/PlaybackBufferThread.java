@@ -1,6 +1,7 @@
 package com.powerband.editor;
 
 import com.powerband.common.constants.BinaryConstants;
+import com.powerband.common.constants.AppConstants;
 import com.powerband.common.exceptions.ArchivoCorruptoException;
 import com.powerband.common.exceptions.PowerBandException;
 import com.powerband.common.exceptions.StorageIOException;
@@ -84,6 +85,7 @@ public final class PlaybackBufferThread extends Thread {
 
     @Override
     public void run() {
+        Exception fallo = null;
         try {
             long inicio = reloj.getAsLong();
             validarArchivo(rutaMusica);
@@ -105,16 +107,30 @@ public final class PlaybackBufferThread extends Thread {
                         throw new ArchivoCorruptoException("Los tiempos de la grabacion retroceden");
                     }
                     esperarHasta(inicio, comando.obtenerTiempo());
-                    reproductor.reproducirComando(comando);
+                    reproductor.playCommand(comando);
                     tiempoAnterior = comando.obtenerTiempo();
                 }
             }
-            resultado.complete(null);
         } catch (InterruptedException error) {
             Thread.currentThread().interrupt();
-            resultado.completeExceptionally(error);
+            fallo = error;
         } catch (PowerBandException | IOException | RuntimeException error) {
-            resultado.completeExceptionally(error);
+            fallo = error;
+        } finally {
+            try {
+                reproductor.finalizarReproduccion();
+            } catch (IOException | RuntimeException error) {
+                if (fallo == null) {
+                    fallo = error;
+                } else if (fallo != error) {
+                    fallo.addSuppressed(error);
+                }
+            }
+        }
+        if (fallo == null) {
+            resultado.complete(null);
+        } else {
+            resultado.completeExceptionally(fallo);
         }
     }
 
@@ -130,8 +146,8 @@ public final class PlaybackBufferThread extends Thread {
     }
 
     private static void dormir(long nanosegundos) throws InterruptedException {
-        long milisegundos = nanosegundos / 1_000_000;
-        int restantes = (int) (nanosegundos % 1_000_000);
+        long milisegundos = nanosegundos / AppConstants.NANOS_POR_MILISEGUNDO;
+        int restantes = (int) (nanosegundos % AppConstants.NANOS_POR_MILISEGUNDO);
         Thread.sleep(milisegundos, restantes);
     }
 
