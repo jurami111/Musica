@@ -1,7 +1,8 @@
 # Musica
 
 Power Band conecta un móvil Android (piano), una cámara que sigue un objeto rojo
-(órgano) y un gamepad USB (bajo) con SuperCollider. El editor funciona por consola.
+(órgano) y un gamepad USB (bajo) con SuperCollider. El editor dispone de una
+entrada por consola y otra independiente con ventana Swing.
 
 ## Ejecutar
 
@@ -23,6 +24,34 @@ Power Band conecta un móvil Android (piano), una cámara que sigue un objeto ro
 El servidor móvil escucha en TCP 5000; se cambia agregando el puerto como argumento
 al comando Java. OSC usa UDP `127.0.0.1:57110`. Un envío UDP no confirma sonido.
 Una fuente ausente se informa y no impide usar las demás.
+
+### Ventana Swing en Windows
+
+Después de preparar SuperCollider y los dispositivos como se indica arriba,
+desde la raíz del proyecto en PowerShell:
+
+```powershell
+mvn -B compile dependency:build-classpath "-Dmdep.outputFile=target\dependencias.txt"
+$dependencias = (Get-Content -Raw 'target\dependencias.txt').Trim()
+java -cp "target\classes;$dependencias" com.powerband.ui.MainWindow
+```
+
+Opcionalmente se puede agregar el puerto TCP como argumento después de
+`MainWindow`. No abrir la consola y la ventana al mismo tiempo sobre los mismos
+archivos.
+
+La ventana muestra hasta 200 comandos recientes y avisa si descarta mensajes
+del monitor por sobrecarga; esto no descarta comandos de la grabación. Use
+**Grabar** y **Parar grabacion** para grabar y asignar un nombre. La lista
+cronológica se muestra por páginas: seleccione un nombre y use **Cargar** y
+**Reproducir**. Al reproducir se detienen los instrumentos; después use
+**Reiniciar instrumentos** y reconecte Android si es necesario.
+
+Si se cancela el nombre, la grabación queda pendiente: use **Nombrar y guardar**
+para continuar. Al cerrar con una grabación activa o pendiente se solicita
+guardarla; cancelar el diálogo mantiene la ventana abierta. Los avisos de
+dispositivos se muestran en la parte inferior y los detalles se registran en la
+consola. El inicio de un hilo no confirma que un dispositivo esté conectado.
 
 ## Grabar, cargar y reproducir
 
