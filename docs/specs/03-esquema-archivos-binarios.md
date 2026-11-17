@@ -102,6 +102,8 @@ desde cero, comienza en n * 256 bytes. Los calculos de posiciones utilizaran
 `long`. El ordenamiento externo y la busqueda binaria deberan utilizar el mismo
 criterio de comparacion de nombres. Se utilizara String.compareTo para el orden
 y String.equals para la igualdad, coherente con el rechazo de duplicados.
+La lectura y escritura de registros individuales se describen en
+[SPEC-INDEX-01](10-registros-indice.md); agregar un registro no ordena el indice.
 
 ## Entradas de recordings.list
 
@@ -118,6 +120,9 @@ de recordings.music se desarrollan en [SPEC-MUSIC-01](07-lectura-escritura-music
 El indice, la lista, la busqueda y el ordenamiento quedan fuera de esa historia.
 La gestion independiente de la lista y sus nombres unicos corresponde a
 [SPEC-LIST-01](08-lista-y-nombres-unicos.md).
+La gestion de registros del indice corresponde a
+[SPEC-INDEX-01](10-registros-indice.md); su integracion y ordenamiento siguen
+pendientes.
 Los modulos deben reutilizar las constantes en lugar de repetir sus valores.
 
 No se fija un maximo arbitrario de canciones o duracion de grabacion.

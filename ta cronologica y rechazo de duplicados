@@ -1,0 +1,18 @@
+ docs/specs/02-contrato-bridge-osc.md               |   6 [32m+[m[31m-[m
+ docs/specs/03-esquema-archivos-binarios.md         |  36 [32m++[m[31m-[m
+ docs/specs/07-lectura-escritura-music.md           | 113 [32m+++++++++[m
+ docs/specs/08-lista-y-nombres-unicos.md            | 106 [32m++++++++[m
+ docs/stories/US-LIST-01-lista-y-nombres-unicos.md  |  37 [32m+++[m
+ .../US-MUSIC-01-lectura-escritura-binaria.md       |  38 [32m+++[m
+ .../common/constants/BinaryConstants.java          |   3 [32m+[m
+ .../powerband/common/constants/SynthConstants.java |   6 [32m+[m
+ .../powerband/common/model/RecordingHeader.java    |  34 [32m++[m[31m-[m
+ .../powerband/common/model/RecordingMetadata.java  |  29 [32m++[m[31m-[m
+ .../com/powerband/common/model/SynthCommand.java   |  79 [32m+++++[m[31m-[m
+ .../powerband/common/model/ValidadorNombres.java   |  21 [32m++[m
+ .../com/powerband/storage/io/ListFileManager.java  | 161 [32m+++++++++++[m[31m-[m
+ .../com/powerband/storage/io/MusicFileManager.java | 274 [32m++++++++++++++++++++[m[31m-[m
+ .../com/powerband/storage/io/NombreBinario.java    |  34 [32m+++[m
+ .../powerband/storage/io/ListFileManagerTest.java  | 169 [32m+++++++++++++[m
+ .../powerband/storage/io/MusicFileManagerTest.java | 227 [32m+++++++++++++++++[m
+ 17 files changed, 1353 insertions(+), 20 deletions(-)

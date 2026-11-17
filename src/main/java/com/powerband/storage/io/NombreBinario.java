@@ -6,17 +6,17 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-final class NombreBinario {
+public final class NombreBinario {
     private NombreBinario() {
     }
 
-    static void escribir(DataOutput salida, String nombre) throws IOException {
+    public static void escribir(DataOutput salida, String nombre) throws IOException {
         for (int i = 0; i < BinaryConstants.MAXIMO_UNIDADES_NOMBRE; i++) {
             salida.writeChar(i < nombre.length() ? nombre.charAt(i) : BinaryConstants.VALOR_RELLENO);
         }
     }
 
-    static String leer(DataInput entrada) throws IOException, ArchivoCorruptoException {
+    public static String leer(DataInput entrada) throws IOException, ArchivoCorruptoException {
         StringBuilder nombre = new StringBuilder();
         boolean relleno = false;
         for (int i = 0; i < BinaryConstants.MAXIMO_UNIDADES_NOMBRE; i++) {
